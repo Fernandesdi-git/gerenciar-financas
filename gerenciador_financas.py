@@ -1,38 +1,67 @@
-transacoes = []
-def adicionar_transacao(tipo, valor, descricao):
-    transacao = {"tipo": tipo, "valor": valor, "descricao": descricao}
-    transacoes.append(transacao)
+transacoes = [] 
 
+class Transacao:
+    def __init__(self, tipo, valor, descricao):
+        self.tipo = tipo
+        self.valor = valor
+        self.descricao = descricao
+
+    def exibir(self):
+        print(f"{self.tipo} - R$ {self.valor} - {self.descricao}")
+    def eh_valor_alto(self):
+        if self.valor > 1000:
+            return True
+        else:
+            return False
+    def aplicar_taxa(self, percentual):
+        self.valor = self.valor - (self.valor * percentual / 100)
+
+def adicionar_transacao(transacao):
+    transacoes.append(transacao)
 def calcular_saldo():
     saldo = 0
-    for transacao in transacoes:
-        if transacao["tipo"] == "Entrada":
-            saldo = saldo + transacao["valor"]
-        elif transacao ["tipo"] == "Saída":
-            saldo = saldo - transacao["valor"]
-    return saldo
+    for t in transacoes:
+        if t.tipo == "Entrada":
+            saldo = saldo + t.valor
+        elif t.tipo == "Saída":
+            saldo = saldo - t.valor
+    return saldo 
 
-def listar_transacoes():
-    for transacao in transacoes:
-        print(f"{transacao['tipo']} - R$ {transacao['valor']} - {transacao['descricao']}")
+class TransacaoRecorrente(Transacao):
+    def __init__ (self, tipo, valor, descricao, frequencia):
+        super().__init__(tipo, valor, descricao)
+        self.frequencia = frequencia
+
+for t in transacoes:
+    t.exibir()
+saldo = calcular_saldo()
 while True:
-    print("1 - Adicionar transação")
-    print("2 - Listar transações")
-    print("3 - Ver saldo")
-    print("4 - Sair")
+    print("\n1 - Adicionar transação")
+    print("2 - Adicionar transação recorrente")
+    print("3 - Listar transações")
+    print("4 - Ver saldo")
+    print("5 - Sair")
+    
     opcao = input("Escolha uma opção: ")
     
     if opcao == "1":
-        tipo = input("Digite o tipo (Entrada/Saída):")
-        valor = float(input("Digite o valor:"))
-        descricao = input("Digite a descrição:")
-        adicionar_transacao(tipo, valor, descricao)
-        print("Transacão Adicionada!")
+        tipo = input("Tipo (Entrada/Saída): ")
+        valor = float(input("Valor: "))
+        descricao = input("Descrição: ")
+        nova = Transacao(tipo, valor, descricao)
+        adicionar_transacao(nova)
     elif opcao == "2":
-        listar_transacoes()
+        tipo = input("Tipo (Entrada/Saída): ")
+        valor = float(input("Valor: "))
+        descricao = input("Descrição: ")
+        frequencia = input("Frequência: ")
+        nova = TransacaoRecorrente(tipo, valor, descricao, frequencia)
+        adicionar_transacao(nova)
     elif opcao == "3":
-        saldo = calcular_saldo()
-        print(f"Saldo Atual: R$ {saldo}")
+        for t in transacoes:
+            t.exibir()
     elif opcao == "4":
-        print("Encerrando o programa")
+        saldo = calcular_saldo()
+        print(f"Saldo: R$ {saldo}")
+    elif opcao == "5":
         break
